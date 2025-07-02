@@ -301,89 +301,99 @@ export default function Formulario() {
     }
   };
 
-  // Renderizado del formulario
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      
-      {/* Sección de Datos Básicos */}
-      <div className="space-y-4">
+// Renderizado del formulario
+return (
+  <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto p-8 bg-gray-50 rounded-xl shadow-lg">
+    <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">Registro</h2>
+    
+    {/* Sección de Datos Básicos */}
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Fecha de otorgamiento</label>
+          <label htmlFor="fechaOtorgamiento" className="block mb-2 font-medium text-gray-700">Fecha de otorgamiento</label>
           <input
             type="date"
+            id="fechaOtorgamiento"
             name="fechaOtorgamiento"
             value={formData.fechaOtorgamiento}
             onChange={(e) => setFormData({...formData, fechaOtorgamiento: e.target.value})}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
               errores.fechaOtorgamiento ? 'border-red-500' : 'border-gray-300'
             }`}
             max={new Date().toISOString().split('T')[0]}
           />
           {errores.fechaOtorgamiento && (
-            <p className="mt-1 text-sm text-red-600">{errores.fechaOtorgamiento}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.fechaOtorgamiento}</p>
           )}
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Matrícula inmobiliaria</label>
+          <label htmlFor="matriculaInmobiliaria" className="block mb-2 font-medium text-gray-700">Matrícula inmobiliaria</label>
           <input
             type="text"
+            id="matriculaInmobiliaria"
             name="matriculaInmobiliaria"
             value={formData.matriculaInmobiliaria}
             onChange={(e) => setFormData({...formData, matriculaInmobiliaria: e.target.value})}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
               errores.matriculaInmobiliaria ? 'border-red-500' : 'border-gray-300'
             }`}
+            placeholder="Ej: 000-0000000"
           />
           {errores.matriculaInmobiliaria && (
-            <p className="mt-1 text-sm text-red-600">{errores.matriculaInmobiliaria}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.matriculaInmobiliaria}</p>
           )}
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Cédula Catastral</label>
+          <label htmlFor="cedulaCatastral" className="block mb-2 font-medium text-gray-700">Cédula Catastral</label>
           <input
             type="text"
             inputMode="numeric"
+            id="cedulaCatastral"
             name="cedulaCatastral"
             value={formData.cedulaCatastral}
             onChange={(e) => {
               const value = e.target.value.replace(/\D/g, '');
               setFormData({...formData, cedulaCatastral: value});
             }}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
               errores.cedulaCatastral ? 'border-red-500' : 'border-gray-300'
             }`}
+            placeholder="Ej: 01020300010002"
           />
           {errores.cedulaCatastral && (
-            <p className="mt-1 text-sm text-red-600">{errores.cedulaCatastral}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.cedulaCatastral}</p>
           )}
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center pt-8"> {/* Ajuste para alinear con los otros campos */}
           <input
             type="checkbox"
             id="mayorExtension"
             name="mayorExtension"
             checked={formData.mayorExtension}
             onChange={(e) => setFormData({...formData, mayorExtension: e.target.checked})}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-md"
           />
-          <label htmlFor="mayorExtension" className="ml-2 block text-sm text-gray-700">
+          <label htmlFor="mayorExtension" className="ml-3 block text-base text-gray-700">
             ¿Mayor extensión?
           </label>
         </div>
       </div>
+    </div>
 
-      {/* Sección de Ubicación */}
-      <div className="space-y-4">
+    {/* Sección de Ubicación */}
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Departamento</label>
+          <label htmlFor="departamento" className="block mb-2 font-medium text-gray-700">Departamento</label>
           <select
+            id="departamento"
             name="departamento"
             value={formData.departamento}
             onChange={(e) => setFormData({...formData, departamento: e.target.value})}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
               errores.departamento ? 'border-red-500' : 'border-gray-300'
             }`}
           >
@@ -395,17 +405,18 @@ export default function Formulario() {
             ))}
           </select>
           {errores.departamento && (
-            <p className="mt-1 text-sm text-red-600">{errores.departamento}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.departamento}</p>
           )}
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Ciudad/Municipio</label>
+          <label htmlFor="ciudad" className="block mb-2 font-medium text-gray-700">Ciudad/Municipio</label>
           <select
+            id="ciudad"
             name="ciudad"
             value={formData.ciudad}
             onChange={(e) => setFormData({...formData, ciudad: e.target.value})}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
               errores.ciudad ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={!formData.departamento}
@@ -418,16 +429,18 @@ export default function Formulario() {
             ))}
           </select>
           {errores.ciudad && (
-            <p className="mt-1 text-sm text-red-600">{errores.ciudad}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.ciudad}</p>
           )}
         </div>
       </div>
+    </div>
 
-      {/* Sección de Detalles Adicionales */}
-      <div className="space-y-4">
+    {/* Sección de Detalles Adicionales */}
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block mb-2 font-medium text-gray-700">Tipo de predio</label>
-          <div className="flex space-x-4">
+          <div className="flex space-x-6">
             <label className="inline-flex items-center">
               <input
                 type="radio"
@@ -435,9 +448,9 @@ export default function Formulario() {
                 value="Urbano"
                 checked={formData.tipoPredio === 'Urbano'}
                 onChange={(e) => setFormData({...formData, tipoPredio: e.target.value})}
-                className="text-blue-600 focus:ring-blue-500"
+                className="text-blue-600 focus:ring-blue-500 h-5 w-5"
               />
-              <span className="ml-2">Urbano</span>
+              <span className="ml-2 text-gray-700">Urbano</span>
             </label>
             <label className="inline-flex items-center">
               <input
@@ -446,74 +459,78 @@ export default function Formulario() {
                 value="Rural"
                 checked={formData.tipoPredio === 'Rural'}
                 onChange={(e) => setFormData({...formData, tipoPredio: e.target.value})}
-                className="text-blue-600 focus:ring-blue-500"
+                className="text-blue-600 focus:ring-blue-500 h-5 w-5"
               />
-              <span className="ml-2">Rural</span>
+              <span className="ml-2 text-gray-700">Rural</span>
             </label>
           </div>
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Nombre del lote/terreno</label>
+          <label htmlFor="nombreLote" className="block mb-2 font-medium text-gray-700">Nombre del lote/terreno</label>
           <input
             type="text"
+            id="nombreLote"
             name="nombreLote"
             value={formData.nombreLote}
             onChange={(e) => setFormData({...formData, nombreLote: e.target.value})}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
               errores.nombreLote ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="Ej: Las Acacias"
           />
           {errores.nombreLote && (
-            <p className="mt-1 text-sm text-red-600">{errores.nombreLote}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.nombreLote}</p>
           )}
         </div>
 
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Dirección</label>
+        <div className="md:col-span-2"> {/* Ocupa ambas columnas */}
+          <label htmlFor="direccion" className="block mb-2 font-medium text-gray-700">Dirección</label>
           <input
             type="text"
+            id="direccion"
             name="direccion"
             value={formData.direccion}
             onChange={(e) => setFormData({...formData, direccion: e.target.value})}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
               errores.direccion ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="Ej: Calle 123 #45-67"
           />
           {errores.direccion && (
-            <p className="mt-1 text-sm text-red-600">{errores.direccion}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.direccion}</p>
           )}
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Acto</label>
+          <label htmlFor="acto" className="block mb-2 font-medium text-gray-700">Acto</label>
           <input
             type="text"
             inputMode="numeric"
+            id="acto"
             name="acto"
             value={formData.acto}
             onChange={(e) => {
               const value = e.target.value.replace(/\D/g, '');
               setFormData({...formData, acto: value});
             }}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
               errores.acto ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="0137"
           />
           {errores.acto && (
-            <p className="mt-1 text-sm text-red-600">{errores.acto}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.acto}</p>
           )}
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Valor del acto</label>
+          <label htmlFor="valorActo" className="block mb-2 font-medium text-gray-700">Valor del acto</label>
           <div className="relative">
-            <span className="absolute left-3 top-3">$</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">$</span>
             <input
               type="text"
+              id="valorActo"
               name="valorActo"
               value={new Intl.NumberFormat('es-CO', {
                 style: 'decimal',
@@ -528,430 +545,489 @@ export default function Formulario() {
                 const rawValue = e.target.value.replace(/[^0-9]/g, '');
                 setFormData({...formData, valorActo: rawValue});
               }}
-              className={`w-full pl-8 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full pl-10 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
                 errores.valorActo ? 'border-red-500' : 'border-gray-300'
               }`}
+              placeholder="0"
             />
           </div>
           {errores.valorActo && (
-            <p className="mt-1 text-sm text-red-600">{errores.valorActo}</p>
+            <p className="mt-2 text-sm text-red-600">{errores.valorActo}</p>
           )}
         </div>
       </div>
+    </div>
 
-      {/* Nueva sección: Compradores */}
-      <div className="space-y-4 border-t pt-4">
-        <h3 className="text-lg font-semibold text-gray-800">Compradores</h3>
-        
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">
-            ¿Cuántos compradores son?
-          </label>
-          <select
-            value={cantidadCompradores}
-            onChange={(e) => setCantidadCompradores(parseInt(e.target.value))}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          >
-            {[1, 2, 3, 4, 5].map(num => (
-              <option key={num} value={num}>{num}</option>
-            ))}
-          </select>
-        </div>
-
-        {compradores.map((comprador, index) => (
-          <div key={`comprador-${index}`} className="space-y-4 border p-4 rounded-lg">
-            <h4 className="font-medium">Comprador #{index + 1}</h4>
-            
-            <div>
-              <label className="block mb-1 text-sm text-gray-700">Nombre completo</label>
-              <input
-                type="text"
-                value={comprador.nombreCompleto}
-                onChange={(e) => handleCompradorChange(index, 'nombreCompleto', e.target.value)}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Número de identificación</label>
-                <input
-                  type="text"
-                  value={comprador.identificacion}
-                  onChange={(e) => handleCompradorChange(index, 'identificacion', e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Lugar de expedición</label>
-                <input
-                  type="text"
-                  value={comprador.expedicion}
-                  onChange={(e) => handleCompradorChange(index, 'expedicion', e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block mb-1 text-sm text-gray-700">Domicilio y ciudad</label>
-              <input
-                type="text"
-                value={comprador.domicilio}
-                onChange={(e) => handleCompradorChange(index, 'domicilio', e.target.value)}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Teléfono</label>
-                <input
-                  type="text"
-                  value={comprador.telefono}
-                  onChange={(e) => handleCompradorChange(index, 'telefono', e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Estado civil</label>
-                <input
-                  type="text"
-                  value={comprador.estadoCivil}
-                  onChange={(e) => handleCompradorChange(index, 'estadoCivil', e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Sexo</label>
-                <div className="flex space-x-4">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name={`comprador-${index}-sexo`}
-                      value="Masculino"
-                      checked={comprador.sexo === 'Masculino'}
-                      onChange={(e) => handleCompradorChange(index, 'sexo', e.target.value)}
-                      className="text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="ml-2">Masculino</span>
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name={`comprador-${index}-sexo`}
-                      value="Femenino"
-                      checked={comprador.sexo === 'Femenino'}
-                      onChange={(e) => handleCompradorChange(index, 'sexo', e.target.value)}
-                      className="text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="ml-2">Femenino</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Correo electrónico</label>
-                <input
-                  type="email"
-                  value={comprador.correo}
-                  onChange={(e) => handleCompradorChange(index, 'correo', e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Ocupación</label>
-                <input
-                  type="text"
-                  value={comprador.ocupacion}
-                  onChange={(e) => handleCompradorChange(index, 'ocupacion', e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-            </div>
-
-            {compradores.length > 1 && (
-              <button
-                type="button"
-                onClick={() => eliminarComprador(index)}
-                className="text-red-600 text-sm"
-              >
-                Eliminar comprador
-              </button>
-            )}
-          </div>
-        ))}
-
-        {cantidadCompradores > 1 && compradores.length < 5 && (
-          <button
-            type="button"
-            onClick={agregarComprador}
-            className="text-blue-600 text-sm"
-          >
-            + Agregar otro comprador
-          </button>
-        )}
+    {/* Nueva sección: Compradores */}
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <h3 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Información de Compradores</h3>
+      
+      <div className="mb-6">
+        <label htmlFor="cantidadCompradores" className="block mb-2 font-medium text-gray-700">
+          ¿Cuántos compradores son?
+        </label>
+        <select
+          id="cantidadCompradores"
+          value={cantidadCompradores}
+          onChange={(e) => setCantidadCompradores(parseInt(e.target.value))}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+        >
+          {[1, 2, 3, 4, 5].map(num => (
+            <option key={num} value={num}>{num}</option>
+          ))}
+        </select>
       </div>
 
-      {/* Sección de Vendedores (similar a compradores) */}
-      <div className="space-y-4 border-t pt-4">
-        <h3 className="text-lg font-semibold text-gray-800">Vendedores</h3>
-        
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">
-            ¿Cuántos vendedores son?
-          </label>
-          <select
-            value={cantidadVendedores}
-            onChange={(e) => setCantidadVendedores(parseInt(e.target.value))}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          >
-            {[1, 2, 3, 4, 5].map(num => (
-              <option key={num} value={num}>{num}</option>
-            ))}
-          </select>
-        </div>
+      {compradores.map((comprador, index) => (
+        <div key={`comprador-${index}`} className="space-y-4 border border-gray-300 p-5 rounded-lg mb-6 last:mb-0">
+          <h4 className="text-lg font-semibold text-gray-700 pb-2 border-b border-gray-200">Comprador #{index + 1}</h4>
+          
+          <div>
+            <label htmlFor={`comprador-${index}-nombre`} className="block mb-2 text-sm font-medium text-gray-700">Nombre completo</label>
+            <input
+              type="text"
+              id={`comprador-${index}-nombre`}
+              value={comprador.nombreCompleto}
+              onChange={(e) => handleCompradorChange(index, 'nombreCompleto', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+              placeholder="Nombre completo del comprador"
+            />
+          </div>
 
-        {vendedores.map((vendedor, index) => (
-          <div key={`vendedor-${index}`} className="space-y-4 border p-4 rounded-lg">
-            <h4 className="font-medium">Vendedor #{index + 1}</h4>
-            
-            {/* Campos del vendedor (igual que los de comprador) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 text-sm text-gray-700">Nombre completo</label>
+              <label htmlFor={`comprador-${index}-identificacion`} className="block mb-2 text-sm font-medium text-gray-700">Número de identificación</label>
               <input
                 type="text"
-                value={vendedor.nombreCompleto}
-                onChange={(e) => handleVendedorChange(index, 'nombreCompleto', e.target.value)}
-                className="w-full p-2 border rounded-md"
+                id={`comprador-${index}-identificacion`}
+                value={comprador.identificacion}
+                onChange={(e) => handleCompradorChange(index, 'identificacion', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                placeholder="Ej: 123456789"
               />
             </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Número de identificación</label>
-                <input
-                  type="text"
-                  value={vendedor.identificacion}
-                  onChange={(e) => handleVendedorChange(index, 'identificacion', e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Lugar de expedición</label>
-                <input
-                  type="text"
-                  value={vendedor.expedicion}
-                  onChange={(e) => handleVendedorChange(index, 'expedicion', e.target.value)}
-                  className="w-full p-2 border rounded-md"
+            <div>
+              <label htmlFor={`comprador-${index}-expedicion`} className="block mb-2 text-sm font-medium text-gray-700">Lugar de expedición</label>
+              <input
+                type="text"
+                id={`comprador-${index}-expedicion`}
+                value={comprador.expedicion}
+                onChange={(e) => handleCompradorChange(index, 'expedicion', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                placeholder="Ciudad de expedición"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor={`comprador-${index}-domicilio`} className="block mb-2 text-sm font-medium text-gray-700">Domicilio y ciudad</label>
+            <input
+              type="text"
+              id={`comprador-${index}-domicilio`}
+              value={comprador.domicilio}
+              onChange={(e) => handleCompradorChange(index, 'domicilio', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+              placeholder="Dirección y ciudad de domicilio"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor={`comprador-${index}-telefono`} className="block mb-2 text-sm font-medium text-gray-700">Teléfono</label>
+              <input
+                type="text"
+                id={`comprador-${index}-telefono`}
+                value={comprador.telefono}
+                onChange={(e) => handleCompradorChange(index, 'telefono', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                placeholder="Ej: 3001234567"
+              />
+            </div>
+            <div>
+              <label htmlFor={`comprador-${index}-estadoCivil`} className="block mb-2 text-sm font-medium text-gray-700">Estado civil</label>
+              <input
+                type="text"
+                id={`comprador-${index}-estadoCivil`}
+                value={comprador.estadoCivil}
+                onChange={(e) => handleCompradorChange(index, 'estadoCivil', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                placeholder="Ej: Soltero(a), Casado(a)"
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Sexo</label>
+              <div className="flex space-x-6">
+                <label htmlFor={`comprador-${index}-sexo-masculino`} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    id={`comprador-${index}-sexo-masculino`}
+                    name={`comprador-${index}-sexo`}
+                    value="Masculino"
+                    checked={comprador.sexo === 'Masculino'}
+                    onChange={(e) => handleCompradorChange(index, 'sexo', e.target.value)}
+                    className="text-blue-600 focus:ring-blue-500 h-5 w-5"
                   />
+                  <span className="ml-2 text-gray-700">Masculino</span>
+                </label>
+                <label htmlFor={`comprador-${index}-sexo-femenino`} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    id={`comprador-${index}-sexo-femenino`}
+                    name={`comprador-${index}-sexo`}
+                    value="Femenino"
+                    checked={comprador.sexo === 'Femenino'}
+                    onChange={(e) => handleCompradorChange(index, 'sexo', e.target.value)}
+                    className="text-blue-600 focus:ring-blue-500 h-5 w-5"
+                  />
+                  <span className="ml-2 text-gray-700">Femenino</span>
+                </label>
               </div>
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 text-sm text-gray-700">Domicilio y ciudad</label>
-              <input 
+              <label htmlFor={`comprador-${index}-correo`} className="block mb-2 text-sm font-medium text-gray-700">Correo electrónico</label>
+              <input
+                type="email"
+                id={`comprador-${index}-correo`}
+                value={comprador.correo}
+                onChange={(e) => handleCompradorChange(index, 'correo', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                placeholder="ejemplo@correo.com"
+              />
+            </div>
+            <div>
+              <label htmlFor={`comprador-${index}-ocupacion`} className="block mb-2 text-sm font-medium text-gray-700">Ocupación</label>
+              <input
                 type="text"
-                value={vendedor.domicilio}
-                onChange={(e) => handleVendedorChange(index, 'domicilio', e.target.value)}
-                className="w-full p-2 border rounded-md"  
+                id={`comprador-${index}-ocupacion`}
+                value={comprador.ocupacion}
+                onChange={(e) => handleCompradorChange(index, 'ocupacion', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                placeholder="Ej: Ingeniero, Estudiante"
+              />
+            </div>
+          </div>
+
+          {compradores.length > 1 && (
+            <button
+              type="button"
+              onClick={() => eliminarComprador(index)}
+              className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center mt-4"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Eliminar comprador
+            </button>
+          )}
+        </div>
+      ))}
+
+      {cantidadCompradores > 0 && compradores.length < cantidadCompradores && ( // Solo permite agregar si no se ha alcanzado la cantidad deseada
+        <button
+          type="button"
+          onClick={agregarComprador}
+          className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center mt-4"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Agregar otro comprador
+        </button>
+      )}
+    </div>
+
+    {/* Sección de Vendedores (similar a compradores) */}
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <h3 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Información de Vendedores</h3>
+      
+      <div className="mb-6">
+        <label htmlFor="cantidadVendedores" className="block mb-2 font-medium text-gray-700">
+          ¿Cuántos vendedores son?
+        </label>
+        <select
+          id="cantidadVendedores"
+          value={cantidadVendedores}
+          onChange={(e) => setCantidadVendedores(parseInt(e.target.value))}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+        >
+          {[1, 2, 3, 4, 5].map(num => (
+            <option key={num} value={num}>{num}</option>
+          ))}
+        </select>
+      </div>
+
+      {vendedores.map((vendedor, index) => (
+        <div key={`vendedor-${index}`} className="space-y-4 border border-gray-300 p-5 rounded-lg mb-6 last:mb-0">
+          <h4 className="text-lg font-semibold text-gray-700 pb-2 border-b border-gray-200">Vendedor #{index + 1}</h4>
+          
+          {/* Campos del vendedor (igual que los de comprador) */}
+          <div>
+            <label htmlFor={`vendedor-${index}-nombre`} className="block mb-2 text-sm font-medium text-gray-700">Nombre completo</label>
+            <input
+              type="text"
+              id={`vendedor-${index}-nombre`}
+              value={vendedor.nombreCompleto}
+              onChange={(e) => handleVendedorChange(index, 'nombreCompleto', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+              placeholder="Nombre completo del vendedor"
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor={`vendedor-${index}-identificacion`} className="block mb-2 text-sm font-medium text-gray-700">Número de identificación</label>
+              <input
+                type="text"
+                id={`vendedor-${index}-identificacion`}
+                value={vendedor.identificacion}
+                onChange={(e) => handleVendedorChange(index, 'identificacion', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                placeholder="Ej: 123456789"
+              />
+            </div>
+            <div>
+              <label htmlFor={`vendedor-${index}-expedicion`} className="block mb-2 text-sm font-medium text-gray-700">Lugar de expedición</label>
+              <input
+                type="text"
+                id={`vendedor-${index}-expedicion`}
+                value={vendedor.expedicion}
+                onChange={(e) => handleVendedorChange(index, 'expedicion', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                placeholder="Ciudad de expedición"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor={`vendedor-${index}-domicilio`} className="block mb-2 text-sm font-medium text-gray-700">Domicilio y ciudad</label>
+            <input 
+              type="text"
+              id={`vendedor-${index}-domicilio`}
+              value={vendedor.domicilio}
+              onChange={(e) => handleVendedorChange(index, 'domicilio', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"  
+              placeholder="Dirección y ciudad de domicilio"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor={`vendedor-${index}-telefono`} className="block mb-2 text-sm font-medium text-gray-700">Teléfono</label>
+              <input
+                type="text"
+                id={`vendedor-${index}-telefono`}
+                value={vendedor.telefono}
+                onChange={(e) => handleVendedorChange(index, 'telefono', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out" 
+                placeholder="Ej: 3001234567"
+              />
+            </div>
+            <div>
+              <label htmlFor={`vendedor-${index}-estadoCivil`} className="block mb-2 text-sm font-medium text-gray-700">Estado civil</label>
+              <input
+                type="text"
+                id={`vendedor-${index}-estadoCivil`}
+                value={vendedor.estadoCivil}
+                onChange={(e) => handleVendedorChange(index, 'estadoCivil', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out" 
+                placeholder="Ej: Soltero(a), Casado(a)"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Teléfono</label>
-                <input
-                  type="text"
-                  value={vendedor.telefono}
-                  onChange={(e) => handleVendedorChange(index, 'telefono', e.target.value)}
-                  className="w-full p-2 border rounded-md" 
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Estado civil</label>
-                <input
-                  type="text"
-                  value={vendedor.estadoCivil}
-                  onChange={(e) => handleVendedorChange(index, 'estadoCivil', e.target.value)}
-                  className="w-full p-2 border rounded-md" 
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Sexo</label>
-                <div className="flex space-x-4">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name={`vendedor-${index}-sexo`}
-                      value="Masculino"
-                      checked={vendedor.sexo === 'Masculino'}
-                      onChange={(e) => handleVendedorChange(index, 'sexo', e.target.value)}
-                      className="text-blue-600 focus:ring-blue-500" 
-                    />
-                    <span className="ml-2">Masculino</span>
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name={`vendedor-${index}-sexo`}
-                      value="Femenino"
-                      checked={vendedor.sexo === 'Femenino'}
-                      onChange={(e) => handleVendedorChange(index, 'sexo', e.target.value)}
-                      className="text-blue-600 focus:ring-blue-500" 
-                    />
-                    <span className="ml-2">Femenino</span>
-                  </label>
-                </div>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Sexo</label>
+              <div className="flex space-x-6">
+                <label htmlFor={`vendedor-${index}-sexo-masculino`} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    id={`vendedor-${index}-sexo-masculino`}
+                    name={`vendedor-${index}-sexo`}
+                    value="Masculino"
+                    checked={vendedor.sexo === 'Masculino'}
+                    onChange={(e) => handleVendedorChange(index, 'sexo', e.target.value)}
+                    className="text-blue-600 focus:ring-blue-500 h-5 w-5" 
+                  />
+                  <span className="ml-2 text-gray-700">Masculino</span>
+                </label>
+                <label htmlFor={`vendedor-${index}-sexo-femenino`} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    id={`vendedor-${index}-sexo-femenino`}
+                    name={`vendedor-${index}-sexo`}
+                    value="Femenino"
+                    checked={vendedor.sexo === 'Femenino'}
+                    onChange={(e) => handleVendedorChange(index, 'sexo', e.target.value)}
+                    className="text-blue-600 focus:ring-blue-500 h-5 w-5" 
+                  />
+                  <span className="ml-2 text-gray-700">Femenino</span>
+                </label>
               </div>
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Correo electrónico</label>
-                <input
-                  type="email"
-                  value={vendedor.correo}
-                  onChange={(e) => handleVendedorChange(index, 'correo', e.target.value)}
-                  className="w-full p-2 border rounded-md" 
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm text-gray-700">Ocupación</label>
-                <input
-                  type="text"
-                  value={vendedor.ocupacion}
-                  onChange={(e) => handleVendedorChange(index, 'ocupacion', e.target.value)}
-                  className="w-full p-2 border rounded-md" 
-                />
-              </div>
-            </div>
-
-            {vendedores.length > 1 && (
-              <button
-                type="button"
-                onClick={() => eliminarVendedor(index)}
-                className="text-red-600 text-sm"
-              >
-                Eliminar vendedor
-              </button>
-            )}
           </div>
-        ))}
 
-        {cantidadVendedores > 1 && vendedores.length < 5 && (
-          <button
-            type="button"
-            onClick={agregarVendedor}
-            className="text-blue-600 text-sm"
-          >
-            + Agregar otro vendedor
-          </button>
-        )}
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor={`vendedor-${index}-correo`} className="block mb-2 text-sm font-medium text-gray-700">Correo electrónico</label>
+              <input
+                type="email"
+                id={`vendedor-${index}-correo`}
+                value={vendedor.correo}
+                onChange={(e) => handleVendedorChange(index, 'correo', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out" 
+                placeholder="ejemplo@correo.com"
+              />
+            </div>
+            <div>
+              <label htmlFor={`vendedor-${index}-ocupacion`} className="block mb-2 text-sm font-medium text-gray-700">Ocupación</label>
+              <input
+                type="text"
+                id={`vendedor-${index}-ocupacion`}
+                value={vendedor.ocupacion}
+                onChange={(e) => handleVendedorChange(index, 'ocupacion', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out" 
+                placeholder="Ej: Ingeniero, Estudiante"
+              />
+            </div>
+          </div>
 
-      {/* Sección: Información del inmueble */}
-      <div className="space-y-4 border-t pt-4">
+          {vendedores.length > 1 && (
+            <button
+              type="button"
+              onClick={() => eliminarVendedor(index)}
+              className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center mt-4"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Eliminar vendedor
+            </button>
+          )}
+        </div>
+      ))}
+
+      {cantidadVendedores > 0 && vendedores.length < cantidadVendedores && ( // Solo permite agregar si no se ha alcanzado la cantidad deseada
+        <button
+          type="button"
+          onClick={agregarVendedor}
+          className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center mt-4"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Agregar otro vendedor
+        </button>
+      )}
+    </div>
+
+    {/* Sección: Información del inmueble */}
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <h3 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Información Adicional del Inmueble</h3>
+      <div className="space-y-6"> {/* Incrementado el espacio entre campos */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Descripción del inmueble</label>
+          <label htmlFor="descripcionInmueble" className="block mb-2 font-medium text-gray-700">Descripción del inmueble</label>
           <textarea
+            id="descripcionInmueble"
             name="descripcionInmueble"
             value={formData.descripcionInmueble}
             onChange={(e) => setFormData({...formData, descripcionInmueble: e.target.value})}
-            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
             rows="4"
-            placeholder="Descripción detallada del inmueble" 
+            placeholder="Descripción detallada del inmueble (ej: área, linderos, mejoras)" 
           />
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Oficina de instrumentos públicos</label>
+          <label htmlFor="oficinaInstrumentos" className="block mb-2 font-medium text-gray-700">Oficina de instrumentos públicos</label>
           <input
             type="text"
+            id="oficinaInstrumentos"
             name="oficinaInstrumentos"
             value={formData.oficinaInstrumentos}
             onChange={(e) => setFormData({...formData, oficinaInstrumentos: e.target.value})}
-            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
             placeholder="Ej: Oficina de Registro de Instrumentos Públicos de Bogotá"
           />
         </div>
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Tradición</label>
+          <label htmlFor="tradicion" className="block mb-2 font-medium text-gray-700">Tradición</label>
           <textarea
+            id="tradicion"
             name="tradicion"
             value={formData.tradicion}
             onChange={(e) => setFormData({...formData, tradicion: e.target.value})}
-            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
             rows="4"
-            placeholder="Descripción de la tradición del inmueble"
+            placeholder="Descripción de la tradición del inmueble (ej: anteriores propietarios, historial)"
           />
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Complementación de la tradición</label>
+          <label htmlFor="complementosTradicion" className="block mb-2 font-medium text-gray-700">Complementación de la tradición</label>
           <textarea
+            id="complementosTradicion"
             name="complementosTradicion"
             value={formData.complementosTradicion}
             onChange={(e) => setFormData({...formData, complementosTradicion: e.target.value})}
-            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
             rows="4"
-            placeholder="Descripción de la complementación de la tradición del inmueble"
+            placeholder="Información adicional o complementaria a la tradición"
           />
         </div>
 
         <div>
           <label className="block mb-2 font-medium text-gray-700">¿Vivienda familiar?</label>
-          <div className="flex space-x-4">
-            <label className="inline-flex items-center">
+          <div className="flex space-x-6"> {/* Aumento de espacio */}
+            <label htmlFor="viviendaFamiliar-lote" className="inline-flex items-center">
               <input
                 type="radio"
+                id="viviendaFamiliar-lote"
                 name="viviendaFamiliar"
                 value="Lote"
                 checked={formData.viviendaFamiliar === 'Lote'}
                 onChange={(e) => setFormData({...formData, viviendaFamiliar: e.target.value})}
-                className="text-blue-600 focus:ring-blue-500"
+                className="text-blue-600 focus:ring-blue-500 h-5 w-5"
               />
-              <span className="ml-2">Lote</span>
+              <span className="ml-2 text-gray-700">Lote</span>
             </label>
-            <label className="inline-flex items-center">
+            <label htmlFor="viviendaFamiliar-otro" className="inline-flex items-center">
               <input
                 type="radio"
+                id="viviendaFamiliar-otro"
                 name="viviendaFamiliar"
                 value="Otro"
                 checked={formData.viviendaFamiliar === 'Otro'}
                 onChange={(e) => setFormData({...formData, viviendaFamiliar: e.target.value})}
-                className="accent-green-600 focus:ring-blue-500"
+                className="text-blue-600 focus:ring-blue-500 h-5 w-5"
               />
-              <span className="ml-2">Otro</span>
+              <span className="ml-2 text-gray-700">Otro</span>
             </label>
           </div>
 
           {formData.viviendaFamiliar === 'Otro' && (
-            <div className="mt-2">
+            <div className="mt-4"> {/* Ajustado el margen superior */}
               <input
                 type="text"
                 name="descripcionViviendaFamiliar"
                 value={formData.descripcionViviendaFamiliar}
                 onChange={(e) => setFormData({ ...formData, descripcionViviendaFamiliar: e.target.value })}
-                className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 border-gray-300"
-                placeholder="Describa el tipo de vivienda"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out border-gray-300"
+                placeholder="Describa el tipo de vivienda (ej: Casa, Apartamento, Finca)"
               />
             </div>
           )}
-
         </div>
       </div>
+    </div>
 
-      <button
-        type="submit"
-        className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors"
-      >
-        Guardar
-      </button>
-    </form>
-  );
+    <button
+      type="submit"
+      className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+    >
+      Guardar Información
+    </button>
+  </form>
+);
 }
