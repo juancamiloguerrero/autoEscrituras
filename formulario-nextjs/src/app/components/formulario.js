@@ -14,14 +14,34 @@ export default function Formulario() {
     direccion: '',
     acto: '',
     valorActo: '',
+    descripcionInmueble: '',
+    oficinaInstrumentos: '',
+    tradicion: '',
+    complementosTradicion: '',
+    viviendaFamiliar: 'Lote',
+    descripcionViviendaFamiliar: '',
   });
 
   const [departamentos, setDepartamentos] = useState([]);
   const [ciudades, setCiudades] = useState([]);
   const [errores, setErrores] = useState({});
-  const [tipoParte, setTipoParte] = useState('');
-  const [cantidad, setCantidad] = useState(1);
-  const [partes, setPartes] = useState([{
+  
+  // Estados para partes involucradas
+  const [cantidadCompradores, setCantidadCompradores] = useState(1);
+  const [cantidadVendedores, setCantidadVendedores] = useState(1);
+  const [compradores, setCompradores] = useState([{
+    nombreCompleto: '',
+    identificacion: '',
+    expedicion: '',
+    domicilio: '',
+    telefono: '',
+    estadoCivil: '',
+    sexo: '',
+    correo: '',
+    ocupacion: '',
+  }]);
+  
+  const [vendedores, setVendedores] = useState([{
     nombreCompleto: '',
     identificacion: '',
     expedicion: '',
@@ -52,11 +72,59 @@ export default function Formulario() {
     }
   }, [formData.departamento, departamentos]);
 
+  // Actualizar arrays de compradores/vendedores cuando cambia la cantidad
+  useEffect(() => {
+    // Para compradores
+    if (cantidadCompradores > compradores.length) {
+      const faltantes = cantidadCompradores - compradores.length;
+      setCompradores([
+        ...compradores,
+        ...Array(faltantes).fill().map(() => ({
+          nombreCompleto: '',
+          identificacion: '',
+          expedicion: '',
+          domicilio: '',
+          telefono: '',
+          estadoCivil: '',
+          sexo: '',
+          correo: '',
+          ocupacion: '',
+        }))
+      ]);
+    } else if (cantidadCompradores < compradores.length) {
+      setCompradores(compradores.slice(0, cantidadCompradores));
+    }
+  }, [cantidadCompradores]);
+
+  useEffect(() => {
+    // Para vendedores
+    if (cantidadVendedores > vendedores.length) {
+      const faltantes = cantidadVendedores - vendedores.length;
+      setVendedores([
+        ...vendedores,
+        ...Array(faltantes).fill().map(() => ({
+          nombreCompleto: '',
+          identificacion: '',
+          expedicion: '',
+          domicilio: '',
+          telefono: '',
+          estadoCivil: '',
+          sexo: '',
+          correo: '',
+          ocupacion: '',
+        }))
+      ]);
+    } else if (cantidadVendedores < vendedores.length) {
+      setVendedores(vendedores.slice(0, cantidadVendedores));
+    }
+  }, [cantidadVendedores]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
     const nuevosErrores = {};
     
+    // Validaciones del formulario principal (se mantienen igual)
     if (!formData.fechaOtorgamiento) {
       nuevosErrores.fechaOtorgamiento = 'La fecha es requerida';
     } else if (new Date(formData.fechaOtorgamiento) > new Date()) {
@@ -99,79 +167,141 @@ export default function Formulario() {
       nuevosErrores.valorActo = 'Formato monetario inválido';
     }
 
-    // Validar datos de compradores/vendedores si se seleccionó tipo
-    if (tipoParte) {
-      partes.forEach((parte, index) => {
-        if (!parte.nombreCompleto.trim()) {
-          nuevosErrores[`parte-${index}-nombre`] = 'Nombre completo requerido';
-        }
-        if (!parte.identificacion.trim()) {
-          nuevosErrores[`parte-${index}-id`] = 'Identificación requerida';
-        }
-        if (!parte.expedicion.trim()) {
-          nuevosErrores[`parte-${index}-expedicion`] = 'Expedición requerida';
-        }
-        if (!parte.domicilio.trim()) {
-          nuevosErrores[`parte-${index}-domicilio`] = 'Domicilio requerido';
-        }
-        if (!parte.telefono.trim()) {
-          nuevosErrores[`parte-${index}-telefono`] = 'Teléfono requerido';
-        } else if (!/^\d+$/.test(parte.telefono)) {
-          nuevosErrores[`parte-${index}-telefono`] = 'Solo se permiten números';
-        }
-        if (!parte.estadoCivil.trim()) {
-          nuevosErrores[`parte-${index}-estadoCivil`] = 'Estado civil requerido';
-        }
-        if (!parte.correo.trim()) {
-          nuevosErrores[`parte-${index}-correo`] = 'Correo electrónico requerido';
-        } else if (!/\S+@\S+\.\S+/.test(parte.correo)) {
-          nuevosErrores[`parte-${index}-correo`] = 'Correo electrónico inválido';
-        }
-        if (!parte.ocupacion.trim()) {
-          nuevosErrores[`parte-${index}-ocupacion`] = 'Ocupación requerida';
-        }
-      });
-    }
+    // Validar datos de compradores
+    compradores.forEach((comprador, index) => {
+      if (!comprador.nombreCompleto.trim()) {
+        nuevosErrores[`comprador-${index}-nombre`] = 'Nombre completo requerido';
+      }
+      if (!comprador.identificacion.trim()) {
+        nuevosErrores[`comprador-${index}-id`] = 'Identificación requerida';
+      }
+      if (!comprador.expedicion.trim()) {
+        nuevosErrores[`comprador-${index}-expedicion`] = 'Expedición requerida';
+      }
+      if (!comprador.domicilio.trim()) {
+        nuevosErrores[`comprador-${index}-domicilio`] = 'Domicilio requerido';
+      }
+      if (!comprador.telefono.trim()) {
+        nuevosErrores[`comprador-${index}-telefono`] = 'Teléfono requerido';
+      } else if (!/^\d+$/.test(comprador.telefono)) {
+        nuevosErrores[`comprador-${index}-telefono`] = 'Solo se permiten números';
+      }
+      if (!comprador.estadoCivil.trim()) {
+        nuevosErrores[`comprador-${index}-estadoCivil`] = 'Estado civil requerido';
+      }
+      if (!comprador.correo.trim()) {
+        nuevosErrores[`comprador-${index}-correo`] = 'Correo electrónico requerido';
+      } else if (!/\S+@\S+\.\S+/.test(comprador.correo)) {
+        nuevosErrores[`comprador-${index}-correo`] = 'Correo electrónico inválido';
+      }
+      if (!comprador.ocupacion.trim()) {
+        nuevosErrores[`comprador-${index}-ocupacion`] = 'Ocupación requerida';
+      }
+    });
+
+    // Validar datos de vendedores (similar a compradores)
+    vendedores.forEach((vendedor, index) => {
+      if (!vendedor.nombreCompleto.trim()) {
+        nuevosErrores[`vendedor-${index}-nombre`] = 'Nombre completo requerido';
+      }
+      if (!vendedor.identificacion.trim()) {
+        nuevosErrores[`vendedor-${index}-id`] = 'Identificación requerida';
+      }
+      if (!vendedor.expedicion.trim()) {
+        nuevosErrores[`vendedor-${index}-expedicion`] = 'Expedición requerida';
+      }
+      if (!vendedor.domicilio.trim()) {
+        nuevosErrores[`vendedor-${index}-domicilio`] = 'Domicilio requerido';
+      }
+      if (!vendedor.telefono.trim()) {
+        nuevosErrores[`vendedor-${index}-telefono`] = 'Teléfono requerido';
+      } else if (!/^\d+$/.test(vendedor.telefono)) {
+        nuevosErrores[`vendedor-${index}-telefono`] = 'Solo se permiten números';
+      }
+      if (!vendedor.estadoCivil.trim()) {
+        nuevosErrores[`vendedor-${index}-estadoCivil`] = 'Estado civil requerido';
+      }
+      if (!vendedor.correo.trim()) {
+        nuevosErrores[`vendedor-${index}-correo`] = 'Correo electrónico requerido';
+      } else if (!/\S+@\S+\.\S+/.test(vendedor.correo)) {
+        nuevosErrores[`vendedor-${index}-correo`] = 'Correo electrónico inválido';
+      }
+      if (!vendedor.ocupacion.trim()) {
+        nuevosErrores[`vendedor-${index}-ocupacion`] = 'Ocupación requerida';
+      }
+    });
 
     setErrores(nuevosErrores);
-
-
 
     if (Object.keys(nuevosErrores).length === 0) {
       console.log('Datos a enviar:', {
         ...formData,
         valorActo: parseFloat(formData.valorActo),
-        [tipoParte.toLowerCase()]: partes
+        compradores,
+        vendedores
       });
     }
   };
 
-  const handleParteChange = (index, field, value) => {
-    const nuevasPartes = [...partes];
-    nuevasPartes[index][field] = value;
-    setPartes(nuevasPartes);
+  const handleCompradorChange = (index, field, value) => {
+    const nuevosCompradores = [...compradores];
+    nuevosCompradores[index][field] = value;
+    setCompradores(nuevosCompradores);
   };
 
-  const agregarParte = () => {
-    setPartes([...partes, {
-        nombreCompleto: '',
-        identificacion: '',
-        expedicion: '',
-        domicilio: '',
-        telefono: '',
-        estadoCivil: '',
-        correo: '',
-        ocupacion: '',
+  const handleVendedorChange = (index, field, value) => {
+    const nuevosVendedores = [...vendedores];
+    nuevosVendedores[index][field] = value;
+    setVendedores(nuevosVendedores);
+  };
+
+  const agregarComprador = () => {
+    setCompradores([...compradores, {
+      nombreCompleto: '',
+      identificacion: '',
+      expedicion: '',
+      domicilio: '',
+      telefono: '',
+      estadoCivil: '',
+      sexo: '',
+      correo: '',
+      ocupacion: '',
     }]);
+    setCantidadCompradores(cantidadCompradores + 1);
   };
 
-  const eliminarParte = (index) => {
-    if (partes.length > 1) {
-        const nuevasPartes = partes.filter((_, i) => i !== index);
-        setPartes(nuevasPartes);
+  const eliminarComprador = (index) => {
+    if (compradores.length > 1) {
+      const nuevosCompradores = compradores.filter((_, i) => i !== index);
+      setCompradores(nuevosCompradores);
+      setCantidadCompradores(nuevosCompradores.length);
     }
   };
 
+  const agregarVendedor = () => {
+    setVendedores([...vendedores, {
+      nombreCompleto: '',
+      identificacion: '',
+      expedicion: '',
+      domicilio: '',
+      telefono: '',
+      estadoCivil: '',
+      sexo: '',
+      correo: '',
+      ocupacion: '',
+    }]);
+    setCantidadVendedores(cantidadVendedores + 1);
+  };
+
+  const eliminarVendedor = (index) => {
+    if (vendedores.length > 1) {
+      const nuevosVendedores = vendedores.filter((_, i) => i !== index);
+      setVendedores(nuevosVendedores);
+      setCantidadVendedores(nuevosVendedores.length);
+    }
+  };
+
+  // Renderizado del formulario
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
       
@@ -409,219 +539,411 @@ export default function Formulario() {
         </div>
       </div>
 
-      {/* Nueva sección: Compradores/Vendedores */}
+      {/* Nueva sección: Compradores */}
       <div className="space-y-4 border-t pt-4">
-        <h3 className="text-lg font-semibold text-gray-800">Partes involucradas</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Compradores</h3>
         
-        <div className="flex space-x-4">
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              name="tipoParte"
-              value="Compradores"
-              checked={tipoParte === 'Compradores'}
-              onChange={(e) => setTipoParte(e.target.value)}
-              className="text-blue-600 focus:ring-blue-500"
-            />
-            <span className="ml-2">Compradores</span>
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">
+            ¿Cuántos compradores son?
           </label>
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              name="tipoParte"
-              value="Vendedores"
-              checked={tipoParte === 'Vendedores'}
-              onChange={(e) => setTipoParte(e.target.value)}
-              className="text-blue-600 focus:ring-blue-500"
-            />
-            <span className="ml-2">Vendedores</span>
-          </label>
+          <select
+            value={cantidadCompradores}
+            onChange={(e) => setCantidadCompradores(parseInt(e.target.value))}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          >
+            {[1, 2, 3, 4, 5].map(num => (
+              <option key={num} value={num}>{num}</option>
+            ))}
+          </select>
         </div>
 
-        {tipoParte && (
-          <>
+        {compradores.map((comprador, index) => (
+          <div key={`comprador-${index}`} className="space-y-4 border p-4 rounded-lg">
+            <h4 className="font-medium">Comprador #{index + 1}</h4>
+            
             <div>
-              <label className="block mb-2 font-medium text-gray-700">
-                ¿Cuántos {tipoParte.toLowerCase()} son?
-              </label>
-              <select
-                value={cantidad}
-                onChange={(e) => {
-                  const newCantidad = parseInt(e.target.value);
-                  setCantidad(newCantidad);
-                  // Ajustar el array de partes según la cantidad seleccionada
-                  if (newCantidad > partes.length) {
-                    const partesFaltantes = newCantidad - partes.length;
-                    setPartes([
-                      ...partes,
-                      ...Array(partesFaltantes).fill().map(() => ({
-                        nombreCompleto: '',
-                        identificacion: '',
-                        expedicion: '',
-                        domicilio: '',
-                        telefono: '',
-                        estadoCivil: '',
-                        correo: '',
-                        ocupacion: ''
-                      }))
-                    ]);
-                  } else if (newCantidad < partes.length) {
-                    setPartes(partes.slice(0, newCantidad));
-                  }
-                }}
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-              >
-                {[1, 2, 3, 4, 5].map(num => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
+              <label className="block mb-1 text-sm text-gray-700">Nombre completo</label>
+              <input
+                type="text"
+                value={comprador.nombreCompleto}
+                onChange={(e) => handleCompradorChange(index, 'nombreCompleto', e.target.value)}
+                className="w-full p-2 border rounded-md"
+              />
             </div>
 
-            {partes.map((parte, index) => (
-              <div key={index} className="space-y-4 border p-4 rounded-lg">
-                <h4 className="font-medium">{tipoParte} #{index + 1}</h4>
-                
-                <div>
-                  <label className="block mb-1 text-sm text-gray-700">Nombre completo</label>
-                  <input
-                    type="text"
-                    value={parte.nombreCompleto}
-                    onChange={(e) => handleParteChange(index, 'nombreCompleto', e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block mb-1 text-sm text-gray-700">Número de identificación</label>
-                    <input
-                      type="text"
-                      value={parte.identificacion}
-                      onChange={(e) => handleParteChange(index, 'identificacion', e.target.value)}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 text-sm text-gray-700">Lugar de expedición</label>
-                    <input
-                      type="text"
-                      value={parte.expedicion}
-                      onChange={(e) => handleParteChange(index, 'expedicion', e.target.value)}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block mb-1 text-sm text-gray-700">Domicilio y ciudad</label>
-                  <input
-                    type="text"
-                    value={parte.domicilio}
-                    onChange={(e) => handleParteChange(index, 'domicilio', e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block mb-1 text-sm text-gray-700">Teléfono</label>
-                    <input
-                      type="text"
-                      value={parte.telefono}
-                      onChange={(e) => handleParteChange(index, 'telefono', e.target.value)}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 text-sm text-gray-700">Estado civil</label>
-                    <select
-                      value={parte.estadoCivil}
-                      onChange={(e) => handleParteChange(index, 'estadoCivil', e.target.value)}
-                      className="w-full p-2 border rounded-md"
-                    >
-                      <option value="">Seleccione...</option>
-                      <option value="Soltero">Soltero/a</option>
-                      <option value="Casado">Casado/a</option>
-                      <option value="Divorciado">Divorciado/a</option>
-                      <option value="Viudo">Viudo/a</option>
-                    </select>
-                  </div>
-
-                  {/* Nuevo campo: Sexo */}
-                  <div>
-                    <label className="block mb-1 text-sm text-gray-700">Sexo</label>
-                    <div className="flex space-x-4">
-                        <label className="inline-flex items-center">
-                            <input
-                                type="radio"
-                                name={`sexo-${index}`}
-                                value="Masculino"
-                                checked={parte.sexo === 'Masculino'}
-                                onChange={(e) => handleParteChange(index, 'sexo', e.target.value)}
-                                className="text-blue-600 focus:ring-blue-500"
-                            />
-                            <span className="ml-2">Masculino</span>
-                        </label>
-                        <label className="inline-flex items-center">
-                            <input
-                                type="radio"
-                                name={`sexo-${index}`}
-                                value="Femenino"
-                                checked={parte.sexo === 'Femenino'}
-                                onChange={(e) => handleParteChange(index, 'sexo', e.target.value)}
-                                className="text-blue-600 focus:ring-blue-500"
-                            />
-                            <span className="ml-2">Femenino</span>
-                        </label>
-                    </div>
-                  </div>
-        
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block mb-1 text-sm text-gray-700">Correo electrónico</label>
-                    <input
-                      type="email"
-                      value={parte.correo}
-                      onChange={(e) => handleParteChange(index, 'correo', e.target.value)}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 text-sm text-gray-700">Ocupación</label>
-                    <input
-                      type="text"
-                      value={parte.ocupacion}
-                      onChange={(e) => handleParteChange(index, 'ocupacion', e.target.value)}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-                </div>
-
-                {partes.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => eliminarParte(index)}
-                    className="text-red-600 text-sm"
-                  >
-                    Eliminar {tipoParte.toLowerCase()}
-                  </button>
-                )}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Número de identificación</label>
+                <input
+                  type="text"
+                  value={comprador.identificacion}
+                  onChange={(e) => handleCompradorChange(index, 'identificacion', e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                />
               </div>
-            ))}
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Lugar de expedición</label>
+                <input
+                  type="text"
+                  value={comprador.expedicion}
+                  onChange={(e) => handleCompradorChange(index, 'expedicion', e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+            </div>
 
-            {cantidad > 1 && partes.length < 10 && (
+            <div>
+              <label className="block mb-1 text-sm text-gray-700">Domicilio y ciudad</label>
+              <input
+                type="text"
+                value={comprador.domicilio}
+                onChange={(e) => handleCompradorChange(index, 'domicilio', e.target.value)}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Teléfono</label>
+                <input
+                  type="text"
+                  value={comprador.telefono}
+                  onChange={(e) => handleCompradorChange(index, 'telefono', e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Estado civil</label>
+                <input
+                  type="text"
+                  value={comprador.estadoCivil}
+                  onChange={(e) => handleCompradorChange(index, 'estadoCivil', e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Sexo</label>
+                <div className="flex space-x-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name={`comprador-${index}-sexo`}
+                      value="Masculino"
+                      checked={comprador.sexo === 'Masculino'}
+                      onChange={(e) => handleCompradorChange(index, 'sexo', e.target.value)}
+                      className="text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="ml-2">Masculino</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name={`comprador-${index}-sexo`}
+                      value="Femenino"
+                      checked={comprador.sexo === 'Femenino'}
+                      onChange={(e) => handleCompradorChange(index, 'sexo', e.target.value)}
+                      className="text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="ml-2">Femenino</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Correo electrónico</label>
+                <input
+                  type="email"
+                  value={comprador.correo}
+                  onChange={(e) => handleCompradorChange(index, 'correo', e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Ocupación</label>
+                <input
+                  type="text"
+                  value={comprador.ocupacion}
+                  onChange={(e) => handleCompradorChange(index, 'ocupacion', e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+            </div>
+
+            {compradores.length > 1 && (
               <button
                 type="button"
-                onClick={agregarParte}
-                className="text-blue-600 text-sm"
+                onClick={() => eliminarComprador(index)}
+                className="text-red-600 text-sm"
               >
-                + Agregar otro {tipoParte.toLowerCase()}
+                Eliminar comprador
               </button>
             )}
-          </>
+          </div>
+        ))}
+
+        {cantidadCompradores > 1 && compradores.length < 5 && (
+          <button
+            type="button"
+            onClick={agregarComprador}
+            className="text-blue-600 text-sm"
+          >
+            + Agregar otro comprador
+          </button>
         )}
+      </div>
+
+      {/* Sección de Vendedores (similar a compradores) */}
+      <div className="space-y-4 border-t pt-4">
+        <h3 className="text-lg font-semibold text-gray-800">Vendedores</h3>
+        
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">
+            ¿Cuántos vendedores son?
+          </label>
+          <select
+            value={cantidadVendedores}
+            onChange={(e) => setCantidadVendedores(parseInt(e.target.value))}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          >
+            {[1, 2, 3, 4, 5].map(num => (
+              <option key={num} value={num}>{num}</option>
+            ))}
+          </select>
+        </div>
+
+        {vendedores.map((vendedor, index) => (
+          <div key={`vendedor-${index}`} className="space-y-4 border p-4 rounded-lg">
+            <h4 className="font-medium">Vendedor #{index + 1}</h4>
+            
+            {/* Campos del vendedor (igual que los de comprador) */}
+            <div>
+              <label className="block mb-1 text-sm text-gray-700">Nombre completo</label>
+              <input
+                type="text"
+                value={vendedor.nombreCompleto}
+                onChange={(e) => handleVendedorChange(index, 'nombreCompleto', e.target.value)}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Número de identificación</label>
+                <input
+                  type="text"
+                  value={vendedor.identificacion}
+                  onChange={(e) => handleVendedorChange(index, 'identificacion', e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Lugar de expedición</label>
+                <input
+                  type="text"
+                  value={vendedor.expedicion}
+                  onChange={(e) => handleVendedorChange(index, 'expedicion', e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                  />
+              </div>
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm text-gray-700">Domicilio y ciudad</label>
+              <input 
+                type="text"
+                value={vendedor.domicilio}
+                onChange={(e) => handleVendedorChange(index, 'domicilio', e.target.value)}
+                className="w-full p-2 border rounded-md"  
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Teléfono</label>
+                <input
+                  type="text"
+                  value={vendedor.telefono}
+                  onChange={(e) => handleVendedorChange(index, 'telefono', e.target.value)}
+                  className="w-full p-2 border rounded-md" 
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Estado civil</label>
+                <input
+                  type="text"
+                  value={vendedor.estadoCivil}
+                  onChange={(e) => handleVendedorChange(index, 'estadoCivil', e.target.value)}
+                  className="w-full p-2 border rounded-md" 
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Sexo</label>
+                <div className="flex space-x-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name={`vendedor-${index}-sexo`}
+                      value="Masculino"
+                      checked={vendedor.sexo === 'Masculino'}
+                      onChange={(e) => handleVendedorChange(index, 'sexo', e.target.value)}
+                      className="text-blue-600 focus:ring-blue-500" 
+                    />
+                    <span className="ml-2">Masculino</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name={`vendedor-${index}-sexo`}
+                      value="Femenino"
+                      checked={vendedor.sexo === 'Femenino'}
+                      onChange={(e) => handleVendedorChange(index, 'sexo', e.target.value)}
+                      className="text-blue-600 focus:ring-blue-500" 
+                    />
+                    <span className="ml-2">Femenino</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Correo electrónico</label>
+                <input
+                  type="email"
+                  value={vendedor.correo}
+                  onChange={(e) => handleVendedorChange(index, 'correo', e.target.value)}
+                  className="w-full p-2 border rounded-md" 
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-sm text-gray-700">Ocupación</label>
+                <input
+                  type="text"
+                  value={vendedor.ocupacion}
+                  onChange={(e) => handleVendedorChange(index, 'ocupacion', e.target.value)}
+                  className="w-full p-2 border rounded-md" 
+                />
+              </div>
+            </div>
+
+            {vendedores.length > 1 && (
+              <button
+                type="button"
+                onClick={() => eliminarVendedor(index)}
+                className="text-red-600 text-sm"
+              >
+                Eliminar vendedor
+              </button>
+            )}
+          </div>
+        ))}
+
+        {cantidadVendedores > 1 && vendedores.length < 5 && (
+          <button
+            type="button"
+            onClick={agregarVendedor}
+            className="text-blue-600 text-sm"
+          >
+            + Agregar otro vendedor
+          </button>
+        )}
+      </div>
+
+      {/* Sección: Información del inmueble */}
+      <div className="space-y-4 border-t pt-4">
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">Descripción del inmueble</label>
+          <textarea
+            name="descripcionInmueble"
+            value={formData.descripcionInmueble}
+            onChange={(e) => setFormData({...formData, descripcionInmueble: e.target.value})}
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+            rows="4"
+            placeholder="Descripción detallada del inmueble" 
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">Oficina de instrumentos públicos</label>
+          <input
+            type="text"
+            name="oficinaInstrumentos"
+            value={formData.oficinaInstrumentos}
+            onChange={(e) => setFormData({...formData, oficinaInstrumentos: e.target.value})}
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+            placeholder="Ej: Oficina de Registro de Instrumentos Públicos de Bogotá"
+          />
+        </div>
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">Tradición</label>
+          <textarea
+            name="tradicion"
+            value={formData.tradicion}
+            onChange={(e) => setFormData({...formData, tradicion: e.target.value})}
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+            rows="4"
+            placeholder="Descripción de la tradición del inmueble"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">Complementación de la tradición</label>
+          <textarea
+            name="complementosTradicion"
+            value={formData.complementosTradicion}
+            onChange={(e) => setFormData({...formData, complementosTradicion: e.target.value})}
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+            rows="4"
+            placeholder="Descripción de la complementación de la tradición del inmueble"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">¿Vivienda familiar?</label>
+          <div className="flex space-x-4">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                name="viviendaFamiliar"
+                value="Lote"
+                checked={formData.viviendaFamiliar === 'Lote'}
+                onChange={(e) => setFormData({...formData, viviendaFamiliar: e.target.value})}
+                className="text-blue-600 focus:ring-blue-500"
+              />
+              <span className="ml-2">Lote</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                name="viviendaFamiliar"
+                value="Otro"
+                checked={formData.viviendaFamiliar === 'Otro'}
+                onChange={(e) => setFormData({...formData, viviendaFamiliar: e.target.value})}
+                className="accent-green-600 focus:ring-blue-500"
+              />
+              <span className="ml-2">Otro</span>
+            </label>
+          </div>
+
+          {formData.viviendaFamiliar === 'Otro' && (
+            <div className="mt-2">
+              <input
+                type="text"
+                name="descripcionViviendaFamiliar"
+                value={formData.descripcionViviendaFamiliar}
+                onChange={(e) => setFormData({ ...formData, descripcionViviendaFamiliar: e.target.value })}
+                className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 border-gray-300"
+                placeholder="Describa el tipo de vivienda"
+              />
+            </div>
+          )}
+
+        </div>
       </div>
 
       <button
