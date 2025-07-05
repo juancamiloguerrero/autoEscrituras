@@ -9,7 +9,7 @@ export default function Formulario() {
     mayorExtension: false,
     departamento: '',
     ciudad: '',
-    tipoPredio: 'urbano',
+    tipoPredio: 'Urbano',
     nombreLote: '',
     direccion: '',
     acto: '',
@@ -33,7 +33,9 @@ export default function Formulario() {
     nombreCompleto: '',
     identificacion: '',
     expedicion: '',
-    domicilio: '',
+    domicilioDireccion: '',
+    departamentoResidencia: '',
+    ciudadResidencia: '',
     telefono: '',
     estadoCivil: '',
     sexo: '',
@@ -45,7 +47,9 @@ export default function Formulario() {
     nombreCompleto: '',
     identificacion: '',
     expedicion: '',
-    domicilio: '',
+    domicilioDireccion: '',
+    departamentoResidencia: '',
+    ciudadResidencia: '',
     telefono: '',
     estadoCivil: '',
     sexo: '',
@@ -83,7 +87,9 @@ export default function Formulario() {
           nombreCompleto: '',
           identificacion: '',
           expedicion: '',
-          domicilio: '',
+          domicilioDireccion: '',
+          departamentoResidencia: '',
+          ciudadResidencia: '',
           telefono: '',
           estadoCivil: '',
           sexo: '',
@@ -106,7 +112,9 @@ export default function Formulario() {
           nombreCompleto: '',
           identificacion: '',
           expedicion: '',
-          domicilio: '',
+          domicilioDireccion: '',
+          departamentoResidencia: '',
+          ciudadResidencia: '',
           telefono: '',
           estadoCivil: '',
           sexo: '',
@@ -178,8 +186,14 @@ export default function Formulario() {
       if (!comprador.expedicion.trim()) {
         nuevosErrores[`comprador-${index}-expedicion`] = 'Expedición requerida';
       }
-      if (!comprador.domicilio.trim()) {
-        nuevosErrores[`comprador-${index}-domicilio`] = 'Domicilio requerido';
+      if (!comprador.domicilioDireccion.trim()) {
+        nuevosErrores[`comprador-${index}-domicilioDireccion`] = 'Domicilio requerido';
+      }
+      if (!comprador.departamentoResidencia.trim()) {
+        nuevosErrores[`comprador-${index}-departamentoResidencia`] = 'Departamento de residencia requerido';
+      }
+      if (!comprador.ciudadResidencia.trim()) {
+        nuevosErrores[`comprador-${index}-ciudadResidencia`] = 'Ciudad de residencia requerida';
       }
       if (!comprador.telefono.trim()) {
         nuevosErrores[`comprador-${index}-telefono`] = 'Teléfono requerido';
@@ -210,8 +224,14 @@ export default function Formulario() {
       if (!vendedor.expedicion.trim()) {
         nuevosErrores[`vendedor-${index}-expedicion`] = 'Expedición requerida';
       }
-      if (!vendedor.domicilio.trim()) {
+      if (!vendedor.domicilioDireccion.trim()) {
         nuevosErrores[`vendedor-${index}-domicilio`] = 'Domicilio requerido';
+      }
+      if (!vendedor.departamentoResidencia.trim()) {
+        nuevosErrores[`vendedor-${index}-departamentoResidencia`] = 'Departamento de residencia requerido';
+      }
+      if (!vendedor.ciudadResidencia.trim()) {
+        nuevosErrores[`vendedor-${index}-ciudadResidencia`] = 'Ciudad de residencia requerida';
       }
       if (!vendedor.telefono.trim()) {
         nuevosErrores[`vendedor-${index}-telefono`] = 'Teléfono requerido';
@@ -260,7 +280,9 @@ export default function Formulario() {
       nombreCompleto: '',
       identificacion: '',
       expedicion: '',
-      domicilio: '',
+      domicilioDireccion: '',
+      departamentoResidencia: '',
+      ciudadResidencia: '',
       telefono: '',
       estadoCivil: '',
       sexo: '',
@@ -283,7 +305,9 @@ export default function Formulario() {
       nombreCompleto: '',
       identificacion: '',
       expedicion: '',
-      domicilio: '',
+      domicilioDireccion: '',
+      departamentoResidencia: '',
+      ciudadResidencia: '',
       telefono: '',
       estadoCivil: '',
       sexo: '',
@@ -532,24 +556,17 @@ return (
               type="text"
               id="valorActo"
               name="valorActo"
-              value={new Intl.NumberFormat('es-CO', {
-                style: 'decimal',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-              }).format(formData.valorActo.replace(/[^0-9]/g, '') || 0)}
+              value={formData.valorActo}
               onChange={(e) => {
-                const rawValue = e.target.value.replace(/[^0-9]/g, '');
-                setFormData({...formData, valorActo: rawValue});
-              }}
-              onBlur={(e) => {
-                const rawValue = e.target.value.replace(/[^0-9]/g, '');
-                setFormData({...formData, valorActo: rawValue});
+              const rawValue = e.target.value.replace(/[^0-9.]/g, '');
+              setFormData({ ...formData, valorActo: rawValue });
               }}
               className={`w-full pl-10 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
                 errores.valorActo ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="0"
             />
+
           </div>
           {errores.valorActo && (
             <p className="mt-2 text-sm text-red-600">{errores.valorActo}</p>
@@ -620,14 +637,38 @@ return (
           </div>
 
           <div>
-            <label htmlFor={`comprador-${index}-domicilio`} className="block mb-2 text-sm font-medium text-gray-700">Domicilio y ciudad</label>
+            <label htmlFor={`comprador-${index}-domicilioDireccion`} className="block mb-2 text-sm font-medium text-gray-700">Dirección de domicilio</label>
             <input
               type="text"
-              id={`comprador-${index}-domicilio`}
-              value={comprador.domicilio}
-              onChange={(e) => handleCompradorChange(index, 'domicilio', e.target.value)}
+              id={`comprador-${index}-domicilioDireccion`}
+              value={comprador.domicilioDireccion}
+              onChange={(e) => handleCompradorChange(index, 'domicilioDireccion', e.target.value)}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
-              placeholder="Dirección y ciudad de domicilio"
+              placeholder="Ej: Carrera 10 #20-30"
+            />
+          </div>
+
+          <div>
+            <label htmlFor={`comprador-${index}-departamentoResidencia`} className="block mb-2 text-sm font-medium text-gray-700">Departamento de residencia</label>
+            <input
+              type="text"
+              id={`comprador-${index}-departamentoResidencia`}
+              value={comprador.departamentoResidencia}
+              onChange={(e) => handleCompradorChange(index, 'departamentoResidencia', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+              placeholder="Ej: Cundinamarca, Antioquia, Valle del Cauca"
+            />
+          </div>
+
+          <div>
+            <label htmlFor={`comprador-${index}-ciudadResidencia`} className="block mb-2 text-sm font-medium text-gray-700">Ciudad de residencia</label>
+            <input
+              type="text"
+              id={`comprador-${index}-ciudadResidencia`}
+              value={comprador.ciudadResidencia}
+              onChange={(e) => handleCompradorChange(index, 'ciudadResidencia', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+              placeholder="Ej: Bogotá, Medellín, Cali"
             />
           </div>
 
@@ -802,14 +843,38 @@ return (
           </div>
 
           <div>
-            <label htmlFor={`vendedor-${index}-domicilio`} className="block mb-2 text-sm font-medium text-gray-700">Domicilio y ciudad</label>
+            <label htmlFor={`vendedor-${index}-domicilioDireccion`} className="block mb-2 text-sm font-medium text-gray-700">Dirección de domicilio</label>
             <input 
               type="text"
-              id={`vendedor-${index}-domicilio`}
-              value={vendedor.domicilio}
-              onChange={(e) => handleVendedorChange(index, 'domicilio', e.target.value)}
+              id={`vendedor-${index}-domicilioDireccion`}
+              value={vendedor.domicilioDireccion}
+              onChange={(e) => handleVendedorChange(index, 'domicilioDireccion', e.target.value)}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"  
-              placeholder="Dirección y ciudad de domicilio"
+              placeholder="Eje: Carrera 10 #20-30"
+            />
+          </div>
+
+          <div>
+            <label htmlFor={`vendedor-${index}-ciudadResidencia`} className="block mb-2 text-sm font-medium text-gray-700">Ciudad de residencia</label>
+            <input 
+              type="text"
+              id={`vendedor-${index}-ciudadResidencia`}
+              value={vendedor.ciudadResidencia}
+              onChange={(e) => handleVendedorChange(index, 'ciudadResidencia', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"  
+              placeholder="Eje: Bogotá, Medellín, Cali"
+            />
+          </div>
+
+          <div>
+            <label htmlFor={`vendedor-${index}-departamentoResidencia`} className="block mb-2 text-sm font-medium text-gray-700">Departamento de residencia</label>
+            <input 
+              type="text"
+              id={`vendedor-${index}-departamentoResidencia`}
+              value={vendedor.departamentoResidencia}
+              onChange={(e) => handleVendedorChange(index, 'departamentoResidencia', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"  
+              placeholder="Eje: Cundinamarca, Antioquia, Valle del Cauca"
             />
           </div>
 
