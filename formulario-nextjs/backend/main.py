@@ -218,6 +218,57 @@ def generar_parrafo_paragrafo_segundo(datos: FormularioData) -> str:
         "- - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - -"
     )
 
+def generar_fichas_partes(datos: FormularioData) -> str:
+    def encabezado_personas(lista: List[Persona], rol: str) -> str:
+        plural = len(lista) > 1
+        sexos = {p.sexo.lower() for p in lista}
+        if sexos == {"femenino"}:
+            return f"LAS {rol}AS" if plural else f"LA {rol}A"
+        elif sexos == {"masculino"}:
+            return f"LOS {rol}ES" if plural else f"EL {rol}"
+        else:
+            return f"LOS {rol}ES"
+
+    def construir_ficha(persona: Persona, rol_extra: Optional[str] = "") -> str:
+        rol_line = f"\n{rol_extra.upper()}" if rol_extra else ""
+        return (
+            f"{persona.nombreCompleto.upper()}                                                         HUELLA DACTILAR{rol_line}\n"
+            f"DOCUMENTO DE IDENTIFICACION:                         INDICE DERECHO\n"
+            f"TELEFONO O CELULAR:\n"
+            f"DIRECCION:\n"
+            f"CIUDAD:\n"
+            f"E-MAIL:\n"
+            f"ACTIVIDAD ECONOMICA:\n"
+            f"ESTADO CIVIL:\n"
+            f"PERSONA EXPUESTA POLITICAMENTE DECRETO 1674 DE 2016 SI__  NO __\n"
+            f"CARGO:\n"
+            f"FECHA DE VINCULACION:\n"
+            f"FECHA DE DESVINCULACION:\n"
+        )
+
+    contenido = []
+
+    # Vendedores
+    encabezado_v = encabezado_personas(datos.vendedores, "VENDEDOR")
+    contenido.append(f"{encabezado_v},\n")
+    for v in datos.vendedores:
+        contenido.append(construir_ficha(v))
+    
+    # Separador visual
+    contenido.append("\n" + "-" * 50 + "\n")
+
+    # Compradores
+    encabezado_c = encabezado_personas(datos.compradores, "COMPRADOR")
+    contenido.append(f"{encabezado_c},\n")
+    for c in datos.compradores:
+        ficha = construir_ficha(c)
+        # Rol adicional si es estipulante
+        if "estipulante" in c.ocupacion.lower():
+            ficha = construir_ficha(c, "COMPRADORA Y ESTIPULANTE" if c.sexo.lower() == "femenino" else "COMPRADOR Y ESTIPULANTE")
+        contenido.append(ficha)
+
+    return "\n".join(contenido)
+
 
 UNIDADES = (
     "", "UN", "DOS", "TRES", "CUATRO", "CINCO",
@@ -360,6 +411,7 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
         "parrafoSegundo": generar_parrafo_segundo(datos),
         "parrafoCompradoresAceptan": generar_parrafo_compradoras_aceptan(datos),
         "parrafoParagrafoSegundo": generar_parrafo_paragrafo_segundo(datos),
+        "fichasPartes": generar_fichas_partes(datos),
     }
 
     doc_text = "\n".join(p.text for p in doc.paragraphs)
