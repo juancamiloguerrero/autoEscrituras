@@ -254,11 +254,31 @@ export default function Formulario() {
     setErrores(nuevosErrores);
 
     if (Object.keys(nuevosErrores).length === 0) {
-      console.log('Datos a enviar:', {
+      const payload = {
         ...formData,
         valorActo: parseFloat(formData.valorActo),
         compradores,
         vendedores
+      };
+
+      fetch("http://localhost:8000/generar-doc/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.dowload = "escritura_generada.docx";
+        a.click();
+      })
+      .catch(error => {
+        console.error("Error generando el documento:", error);
+        alert("Hubo un error al generar el archivo")
       });
     }
   };
