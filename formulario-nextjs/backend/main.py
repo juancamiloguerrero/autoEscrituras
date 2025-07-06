@@ -1,11 +1,12 @@
-from fastapi import FastAPI, UploadFile, HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from docx import Document
 from docx.shared import Pt, Cm
-import os
+from datetime import datetime
+from typing import List
 import uuid
 
 app = FastAPI()
@@ -58,7 +59,6 @@ def formatear_parrafos(doc: Document):
         for run in p.runs:
             run.font.name = 'Arial'
             run.font.size = Pt(12)
-            run.bold = True
         p.style.font.name = 'Arial'
 
 def ajustar_margenes_superiores(doc: Document):
@@ -68,6 +68,76 @@ def ajustar_margenes_superiores(doc: Document):
     section.left_margin = Cm(3.2)
     section.right_margin = Cm(2.3)
     section.gutter = Cm(0)
+
+
+def fecha_a_texto(fecha_str: str) -> str:
+    meses = [
+        "", "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ]
+    dias_ordinales = {
+        1: "primero", 2: "segundo", 3: "tercero", 4: "cuarto", 5: "quinto",
+        6: "sexto", 7: "séptimo", 8: "octavo", 9: "noveno", 10: "décimo",
+        11: "once", 12: "doce", 13: "trece", 14: "catorce", 15: "quince",
+        16: "dieciséis", 17: "diecisiete", 18: "dieciocho", 19: "diecinueve", 20: "veinte",
+        21: "veintiuno", 22: "veintidós", 23: "veintitrés", 24: "veinticuatro", 25: "veinticinco",
+        26: "veintiséis", 27: "veintisiete", 28: "veintiocho", 29: "veintinueve", 30: "treinta", 31: "treinta y uno"
+    }
+
+    fecha = datetime.strptime(fecha_str, "%Y-%m-%d")
+    dia = fecha.day
+    mes = fecha.month
+    anio = fecha.year
+
+    dia_ordinal = dias_ordinales.get(dia, str(dia))
+    mes_texto = meses[mes]
+    anio_texto = f"{anio}"
+    anio_extendido = "dos mil " + (f"veinticinco" if anio == 2025 else str(anio)[-2:])
+
+    return f"a {dia_ordinal} ({dia:02}) día del mes de {mes_texto.capitalize()} del año {anio_extendido} ( {anio_texto} )"
+
+def generar_parrafo_compradores(compradores: List[Persona]) -> str:
+    parrafos = []
+    for p in compradores:
+        genero_domiciliado = "domiciliada" if p.sexo.lower() == "femenino" else "domiciliado"
+        genero_identificada = "identificada" if p.sexo.lower() == "femenino" else "identificado"
+        parrafo = (
+            f"{p.nombreCompleto} mayor de edad, {genero_domiciliado} y residente en el Municipio de {p.ciudadResidencia} - {p.departamentoResidencia}, "
+            f"en la {p.domicilioDireccion}, {genero_identificada} con la cédula de ciudadanía número {p.identificacion} expedida en {p.expedicion}, "
+            f"de estado civil {p.estadoCivil},  teléfono {p.telefono}, ocupación {p.ocupacion}, correo electrónico {p.correo}"
+        )
+        parrafos.append(parrafo)
+
+    introduccion = "PRIMER: Que transfiere a título de compraventa y enajenación real a favor de "
+    cuerpo = "; ".join(parrafos)
+    cierre = (
+        ", conforme lo dispone el artículo 1506 del Código Civil (C.C). "
+        "SIENDO LA VENTA, EL DERECHO DE DOMINIO, PROPIEDAD Y POSESIÓN, y todos los demás derechos reales que, "
+        "junto con todas sus anexidades, usos, costumbres y servidumbres, tiene la vendedora sobre el total del cien por ciento (100%) "
+        "del siguiente bien inmueble:  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n"
+        "-----------------------------------------------------------------------------------------------------------------"
+    )
+
+    return introduccion + cuerpo + cierre
+
+
+def generar_parrafo_vendedores(vendedores: List[Persona]) -> str:
+    parrafos = []
+    for p in vendedores:
+        genero_domiciliado = "domiciliada" if p.sexo.lower() == "femenino" else "domiciliado"
+        genero_identificada = "identificada" if p.sexo.lower() == "femenino" else "identificado"
+        parrafo = (
+            f"{p.nombreCompleto} mayor de edad, {genero_domiciliado} y residente en el Municipio de {p.ciudadResidencia} - {p.departamentoResidencia}, "
+            f"en la {p.domicilioDireccion}, {genero_identificada} con la cédula de ciudadanía número {p.identificacion} expedida en {p.expedicion}, "
+            f"de estado civil {p.estadoCivil},  teléfono {p.telefono}, ocupación {p.ocupacion}, correo electrónico {p.correo}"
+        )
+        parrafos.append(parrafo)
+
+    if len(parrafos) == 1:
+        return parrafos[0] + ", manifestó: - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ---------------------- - - - ---- -------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    else:
+        return "; ".join(parrafos) + ", manifestaron: - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ---------------------- - - - ---- -------------------------------------------------------------------------------------------------------------------------------------------------------------"
+
 
 def reemplazar_campos(doc: Document, datos: FormularioData):
     valor_acto = f"${datos.valorActo:,.0f}".replace(",", ".")
@@ -113,6 +183,10 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
         "complementosTradicion": datos.complementosTradicion or "",
         "viviendaFamiliar": datos.viviendaFamiliar or "",
         "descripcionViviendaFamiliar": datos.descripcionViviendaFamiliar or "",
+        "fechaOtorgamiento": datos.fechaOtorgamiento,
+        "fechaOtorgamientoTexto": fecha_a_texto(datos.fechaOtorgamiento),
+        "vendedoresParrafo": generar_parrafo_vendedores(datos.vendedores),
+        "compradoresParrafo": generar_parrafo_compradores(datos.compradores),
     }
 
     doc_text = "\n".join(p.text for p in doc.paragraphs)
@@ -147,8 +221,6 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
         for run in p.runs:
             run.font.name = 'Arial'
             run.font.size = Pt(12)
-            run.bold = True
-
 
     formatear_parrafos(doc)
     ajustar_margenes_superiores(doc)
