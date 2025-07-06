@@ -7,6 +7,7 @@ from docx import Document
 from docx.shared import Pt, Cm
 from datetime import datetime
 from typing import List
+import math
 import uuid
 
 app = FastAPI()
@@ -35,6 +36,7 @@ class Persona(BaseModel):
 
 class FormularioData(BaseModel):
     fechaOtorgamiento: str
+    fechaPazYSalvo: str
     matriculaInmobiliaria: str
     cedulaCatastral: Optional[str]
     mayorExtension: bool
@@ -120,6 +122,171 @@ def generar_parrafo_compradores(compradores: List[Persona]) -> str:
 
     return introduccion + cuerpo + cierre
 
+def generar_parrafo_lote(datos: FormularioData) -> str:
+    # Determinar cómo iniciar el párrafo según el tipo de vivienda
+    if datos.viviendaFamiliar.lower() == "lote":
+        inicio = "UN LOTE"
+    elif datos.viviendaFamiliar.lower() == "otro":
+        inicio = datos.descripcionViviendaFamiliar or ""
+    else:
+        inicio = datos.viviendaFamiliar  # fallback en caso de otros valores
+
+    tipo_predio = datos.tipoPredio.upper()
+    nombre_lote = datos.nombreLote.upper()
+    ciudad = datos.ciudad
+    departamento = datos.departamento
+
+    return (
+        f"{inicio} DE TERRENO {tipo_predio} DISTINGUIDO COMO {nombre_lote}, "
+        f"Ubicado en la Vereda -----, del Municipio de {ciudad}, Departamento de {departamento},"
+    )
+
+def valor_a_texto(valor: float) -> str:
+    entero = int(round(valor))
+    return numero_a_letras(entero)
+
+def generar_parrafo_segundo(datos: FormularioData) -> str:
+    def obtener_articulo_y_rol(personas: List[Persona], rol_base: str):
+        plural = len(personas) > 1
+        sexos = {p.sexo.lower() for p in personas}
+
+        if sexos == {"femenino"}:
+            return ("las", rol_base + "as") if plural else ("la", rol_base + "a")
+        elif sexos == {"masculino"}:
+            return ("los", rol_base + "es") if plural else ("el", rol_base)
+        else:
+            return ("los", rol_base + "es")
+
+    texto_valor = valor_a_texto(datos.valorActo)
+    valor_formateado = f"${datos.valorActo:,.0f}".replace(",", ".")
+
+    articulo_v, rol_v = obtener_articulo_y_rol(datos.vendedores, "vendedor")
+    articulo_c, rol_c = obtener_articulo_y_rol(datos.compradores, "comprador")
+
+    return (
+        f"SEGUNDO: El precio de esta compraventa es por la cantidad de {texto_valor} "
+        f"( {valor_formateado} ), moneda legal colombiana, dinero que {articulo_v} {rol_v} "
+        f"declara haber recibido en efectivo de parte de {articulo_c} {rol_c} a entera satisfacción. "
+        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+    )
+
+def generar_parrafo_compradoras_aceptan(datos: FormularioData) -> str:
+    compradores = datos.compradores
+    plural = len(compradores) > 1
+    sexos = {p.sexo.lower() for p in compradores}
+
+    # Determinar encabezado correcto según sexo y cantidad
+    if sexos == {"femenino"}:
+        encabezado = "las Compradoras" if plural else "la Compradora"
+    elif sexos == {"masculino"}:
+        encabezado = "los Compradores" if plural else "el Comprador"
+    else:
+        encabezado = "los Compradores" if plural else "el Comprador"
+
+    # Obtener nombres completos
+    nombres = ", ".join(p.nombreCompleto for p in compradores)
+
+    # Construir párrafo
+    return (
+        f"Presente en este acto {encabezado}: {nombres}, de las condiciones civiles antes indicadas, quienes manifiestan: "
+        "a) Que aceptan en todos y cada uno de sus términos la presente escritura y el contrato de compraventa que ella contiene a su favor; "
+        "b) Que han cancelado la totalidad del valor acordado; y "
+        "c) Que tienen recibido el inmueble a entera satisfacción, con todas sus mejoras y anexidades existentes. "
+        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  "
+        "- - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - "
+    )
+
+def generar_parrafo_paragrafo_segundo(datos: FormularioData) -> str:
+    vendedores = datos.vendedores
+    plural = len(vendedores) > 1
+    sexos = {p.sexo.lower() for p in vendedores}
+
+    if sexos == {"femenino"}:
+        encabezado = "LAS VENDEDORAS" if plural else "LA VENDEDORA"
+    elif sexos == {"masculino"}:
+        encabezado = "LOS VENDEDORES" if plural else "EL VENDEDOR"
+    else:
+        encabezado = "LOS VENDEDORES"
+
+    return (
+        f"PARAGRAFO SEGUNDO: {encabezado} O TRANSFERENTE DEJA EXPRESA CONSTANCIA BAJO LA GRAVEDAD DE JURAMENTO QUE "
+        "SOBRE EL INMUEBLE QUE TRANSFIERE NO PESA PROTECCION ALGUNA QUE IMPIDA EL ACTO DE TRANSFERENCIA O ENAJENACION. "
+        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+        "- - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+        "- - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - -"
+    )
+
+
+UNIDADES = (
+    "", "UN", "DOS", "TRES", "CUATRO", "CINCO",
+    "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ",
+    "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE",
+    "DIECISÉIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE", "VEINTE"
+)
+
+DECENAS = (
+    "", "", "VEINTE", "TREINTA", "CUARENTA",
+    "CINCUENTA", "SESENTA", "SETENTA", "OCHENTA", "NOVENTA"
+)
+
+CENTENAS = (
+    "", "CIENTO", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS",
+    "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS"
+)
+
+def numero_a_letras(n: int) -> str:
+    if n == 0:
+        return "CERO PESOS MONEDA CORRIENTE"
+    if n == 100:
+        return "CIEN PESOS MONEDA CORRIENTE"
+
+    resultado = ""
+    millones = n // 1_000_000
+    miles = (n % 1_000_000) // 1_000
+    cientos = n % 1_000
+
+    if millones > 0:
+        if millones == 1:
+            resultado += "UN MILLÓN "
+        else:
+            resultado += f"{convertir_trio(millones)} MILLONES "
+
+    if miles > 0:
+        if miles == 1:
+            resultado += "MIL "
+        else:
+            resultado += f"{convertir_trio(miles)} MIL "
+
+    if cientos > 0:
+        resultado += convertir_trio(cientos)
+
+    return resultado.strip() + " DE PESOS MONEDA CORRIENTE"
+
+def convertir_trio(n: int) -> str:
+    c = n // 100
+    d = (n % 100) // 10
+    u = n % 10
+
+    texto = ""
+    if n == 0:
+        return ""
+
+    if n <= 20:
+        texto = UNIDADES[n]
+    elif n < 100:
+        texto = DECENAS[d]
+        if u > 0:
+            texto += f" Y {UNIDADES[u]}"
+    else:
+        texto = CENTENAS[c]
+        resto = n % 100
+        if resto > 0:
+            texto += f" {convertir_trio(resto)}"
+
+    return texto
+
 
 def generar_parrafo_vendedores(vendedores: List[Persona]) -> str:
     parrafos = []
@@ -169,8 +336,10 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
 
     reemplazos = {
         "fechaOtorgamiento": datos.fechaOtorgamiento,
+        "fechaPazYSalvo": datos.fechaPazYSalvo,
         "matriculaInmobiliaria": datos.matriculaInmobiliaria,
         "cedulaCatastral": f"{datos.cedulaCatastral} {mayor_ext}",
+        "mayorExtension": f"{mayor_ext} " if datos.mayorExtension else "",
         "ciudad": ciudad,
         "departamento": departamento,
         "tipoPredio": datos.tipoPredio,
@@ -179,14 +348,18 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
         "valorActo": valor_acto,
         "codigoActo": datos.acto,
         "descripcionInmueble": datos.descripcionInmueble or "",
+        "oficinaInstrumentos": datos.oficinaInstrumentos or "",
         "tradicion": datos.tradicion or "",
         "complementosTradicion": datos.complementosTradicion or "",
         "viviendaFamiliar": datos.viviendaFamiliar or "",
         "descripcionViviendaFamiliar": datos.descripcionViviendaFamiliar or "",
-        "fechaOtorgamiento": datos.fechaOtorgamiento,
         "fechaOtorgamientoTexto": fecha_a_texto(datos.fechaOtorgamiento),
         "vendedoresParrafo": generar_parrafo_vendedores(datos.vendedores),
         "compradoresParrafo": generar_parrafo_compradores(datos.compradores),
+        "loteParrafo": generar_parrafo_lote(datos),
+        "parrafoSegundo": generar_parrafo_segundo(datos),
+        "parrafoCompradoresAceptan": generar_parrafo_compradoras_aceptan(datos),
+        "parrafoParagrafoSegundo": generar_parrafo_paragrafo_segundo(datos),
     }
 
     doc_text = "\n".join(p.text for p in doc.paragraphs)

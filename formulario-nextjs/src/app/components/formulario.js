@@ -20,6 +20,7 @@ export default function Formulario() {
     complementosTradicion: '',
     viviendaFamiliar: 'Lote',
     descripcionViviendaFamiliar: '',
+    fechaPazYSalvo: '',
   });
 
   const [departamentos, setDepartamentos] = useState([]);
@@ -137,6 +138,12 @@ export default function Formulario() {
       nuevosErrores.fechaOtorgamiento = 'La fecha es requerida';
     } else if (new Date(formData.fechaOtorgamiento) > new Date()) {
       nuevosErrores.fechaOtorgamiento = 'No puede ser fecha futura';
+    }
+
+    if (!formData.fechaPazYSalvo) {
+      nuevosErrores.fechaPazYSalvo = 'La fecha de paz y salvo es requerida';
+    } else if (new Date(formData.fechaPazYSalvo) > new Date()) {
+      nuevosErrores.fechaPazYSalvo = 'No puede ser fecha futura';
     }
 
     if (!formData.matriculaInmobiliaria.trim()) {
@@ -368,6 +375,24 @@ return (
           />
           {errores.fechaOtorgamiento && (
             <p className="mt-2 text-sm text-red-600">{errores.fechaOtorgamiento}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="fechaPazYSalvo" className="block mb-2 font-medium text-gray-700">Fecha de Paz y Salvo</label>
+          <input
+            type="date"
+            id="fechaPazYSalvo"
+            name="fechaPazYSalvo"
+            value={formData.fechaPazYSalvo}
+            onChange={(e) => setFormData({...formData, fechaPazYSalvo: e.target.value})}
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out ${
+              errores.fechaPazYSalvo ? 'border-red-500' : 'border-gray-300'
+            }`}
+            max={new Date().toISOString().split('T')[0]}
+          />
+          {errores.fechaPazYSalvo && (
+            <p className="mt-2 text-sm text-red-600">{errores.fechaPazYSalvo}</p>
           )}
         </div>
 
