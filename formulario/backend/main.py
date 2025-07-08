@@ -116,8 +116,7 @@ def generar_parrafo_compradores(compradores: List[Persona]) -> str:
         ", conforme lo dispone el artículo 1506 del Código Civil (C.C). "
         "SIENDO LA VENTA, EL DERECHO DE DOMINIO, PROPIEDAD Y POSESIÓN, y todos los demás derechos reales que, "
         "junto con todas sus anexidades, usos, costumbres y servidumbres, tiene la vendedora sobre el total del cien por ciento (100%) "
-        "del siguiente bien inmueble:  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n"
-        "-----------------------------------------------------------------------------------------------------------------"
+        "del siguiente bien inmueble:"
     )
 
     return introduccion + cuerpo + cierre
@@ -167,8 +166,6 @@ def generar_parrafo_segundo(datos: FormularioData) -> str:
         f"SEGUNDO: El precio de esta compraventa es por la cantidad de {texto_valor} "
         f"( {valor_formateado} ), moneda legal colombiana, dinero que {articulo_v} {rol_v} "
         f"declara haber recibido en efectivo de parte de {articulo_c} {rol_c} a entera satisfacción. "
-        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
     )
 
 def generar_parrafo_compradoras_aceptan(datos: FormularioData) -> str:
@@ -193,8 +190,6 @@ def generar_parrafo_compradoras_aceptan(datos: FormularioData) -> str:
         "a) Que aceptan en todos y cada uno de sus términos la presente escritura y el contrato de compraventa que ella contiene a su favor; "
         "b) Que han cancelado la totalidad del valor acordado; y "
         "c) Que tienen recibido el inmueble a entera satisfacción, con todas sus mejoras y anexidades existentes. "
-        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  "
-        "- - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - "
     )
 
 def generar_parrafo_paragrafo_segundo(datos: FormularioData) -> str:
@@ -212,10 +207,6 @@ def generar_parrafo_paragrafo_segundo(datos: FormularioData) -> str:
     return (
         f"PARAGRAFO SEGUNDO: {encabezado} O TRANSFERENTE DEJA EXPRESA CONSTANCIA BAJO LA GRAVEDAD DE JURAMENTO QUE "
         "SOBRE EL INMUEBLE QUE TRANSFIERE NO PESA PROTECCION ALGUNA QUE IMPIDA EL ACTO DE TRANSFERENCIA O ENAJENACION. "
-        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-        "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-        "- - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-        "- - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - -"
     )
 
 def generar_fichas_partes(datos: FormularioData) -> str:
@@ -352,9 +343,9 @@ def generar_parrafo_vendedores(vendedores: List[Persona]) -> str:
         parrafos.append(parrafo)
 
     if len(parrafos) == 1:
-        return parrafos[0] + ", manifestó: - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ---------------------- - - - ---- -------------------------------------------------------------------------------------------------------------------------------------------------------------"
+        return parrafos[0] + ", manifestó:"
     else:
-        return "; ".join(parrafos) + ", manifestaron: - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ---------------------- - - - ---- -------------------------------------------------------------------------------------------------------------------------------------------------------------"
+        return "; ".join(parrafos) + ", manifestaron:"
 
 
 def reemplazar_campos(doc: Document, datos: FormularioData):
@@ -441,11 +432,12 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
         p = doc.add_paragraph(bloque.strip())
         p.paragraph_format.space_before = Pt(0)
         p.paragraph_format.space_after = Pt(6)
-        p.paragraph_format.line_spacing = 1.0
+        p.paragraph_format.line_spacing = 1.5
 
         for run in p.runs:
             run.font.name = 'Arial'
             run.font.size = Pt(12)
+            run.font.bold = True
 
     formatear_parrafos(doc)
     ajustar_margenes_superiores(doc)
