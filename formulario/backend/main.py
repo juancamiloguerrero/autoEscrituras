@@ -8,7 +8,6 @@ from docx.shared import Pt, Cm
 from datetime import datetime
 from typing import List
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-import math
 import uuid
 
 app = FastAPI()
