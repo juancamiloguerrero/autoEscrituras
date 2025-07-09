@@ -4,16 +4,15 @@ WORKDIR /app
 
 # Copia requirements primero para cachear
 COPY formulario/backend/requirements.txt .
+COPY formulario/backend/templates/ /app/templates/
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia la plantilla
-COPY formulario/backend/templates/ /app/templates/
+# Copia todo el proyecto
+COPY . .
 
-# Copia el código
-COPY formulario/backend/ /app/
+# Expone el puerto que usa FastAPI
+EXPOSE 10000
 
-# Crea directorio para archivos generados
-RUN mkdir -p /app/generated
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
+# Comando para iniciar la aplicación
+CMD ["uvicorn", "formulario.backend.main:app", "--host", "0.0.0.0", "--port", "10000"]

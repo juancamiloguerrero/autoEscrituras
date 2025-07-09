@@ -8,6 +8,8 @@ from docx.shared import Pt, Cm
 from datetime import datetime
 from typing import List
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from pathlib import Path
+import os
 import uuid
 
 app = FastAPI()
@@ -55,6 +57,10 @@ class FormularioData(BaseModel):
     descripcionViviendaFamiliar: Optional[str]
     compradores: List[Persona]
     vendedores: List[Persona]
+
+# Agrega esto justo después de las definiciones de modelos y antes de las funciones utilitarias
+BASE_DIR = Path(__file__).parent.resolve()
+TEMPLATE_PATH = BASE_DIR / "templates" / "formatoPlantilla.docx"
 
 def formatear_parrafos(doc: Document):
     for p in doc.paragraphs:
@@ -459,20 +465,43 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
 @app.post("/generar-doc/")
 async def generar_documento(datos: FormularioData):
     try:
-        plantilla_path = "templates/formatoPlantilla.docx"
-        doc = Document(plantilla_path)
+        # Verificación explícita de que existe la plantilla
+        if not TEMPLATE_PATH.exists():
+            error_detail = {
+                "error": "Plantilla no encontrada",
+                "ruta_esperada": str(TEMPLATE_PATH),
+                "directorio_actual": str(BASE_DIR),
+                "contenido_templates": os.listdir(str(BASE_DIR / "templates")) if os.path.exists(str(BASE_DIR / "templates")) else "Directorio no existe"
+            }
+            raise HTTPException(status_code=500, detail=error_detail)
 
+        # Cargar documento
+        doc = Document(str(TEMPLATE_PATH))
+        
+        # Procesar documento
         reemplazar_campos(doc, datos)
 
+        # Guardar resultado
         output_id = str(uuid.uuid4())
-        output_path = f"generated/documento_{output_id}.docx"
-        doc.save(output_path)
+        output_dir = BASE_DIR / "generated"
+        output_dir.mkdir(exist_ok=True)
+        output_path = output_dir / f"documento_{output_id}.docx"
+        
+        doc.save(str(output_path))
 
         return FileResponse(
-            output_path,
+            str(output_path),
             filename="escritura_generada.docx",
             media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
 
+    except HTTPException:
+        raise  # Re-lanzamos las excepciones HTTP que ya manejamos
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        error_detail = {
+            "error": str(e),
+            "type": type(e).__name__,
+            "template_path": str(TEMPLATE_PATH),
+            "exists": os.path.exists(str(TEMPLATE_PATH))
+        }
+        raise HTTPException(status_code=500, detail=error_detail)
