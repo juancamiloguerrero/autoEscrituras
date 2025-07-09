@@ -33,7 +33,7 @@ class Persona(BaseModel):
     telefono: str
     estadoCivil: str
     sexo: str
-    correo: EmailStr
+    correo: str
     ocupacion: str
 
 class FormularioData(BaseModel):

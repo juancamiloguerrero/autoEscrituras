@@ -211,9 +211,7 @@ export default function Formulario() {
         nuevosErrores[`comprador-${index}-estadoCivil`] = 'Estado civil requerido';
       }
       if (!comprador.correo.trim()) {
-        nuevosErrores[`comprador-${index}-correo`] = 'Correo electrónico requerido';
-      } else if (!/\S+@\S+\.\S+/.test(comprador.correo)) {
-        nuevosErrores[`comprador-${index}-correo`] = 'Correo electrónico inválido';
+        nuevosErrores[`comprador-${index}-correo`] = 'Debe ingresar algún valor (ej: sin correo)';
       }
       if (!comprador.ocupacion.trim()) {
         nuevosErrores[`comprador-${index}-ocupacion`] = 'Ocupación requerida';
@@ -249,9 +247,7 @@ export default function Formulario() {
         nuevosErrores[`vendedor-${index}-estadoCivil`] = 'Estado civil requerido';
       }
       if (!vendedor.correo.trim()) {
-        nuevosErrores[`vendedor-${index}-correo`] = 'Correo electrónico requerido';
-      } else if (!/\S+@\S+\.\S+/.test(vendedor.correo)) {
-        nuevosErrores[`vendedor-${index}-correo`] = 'Correo electrónico inválido';
+        nuevosErrores[`vendedor-${index}-correo`] = 'Debe ingresar algún valor (ej: sin correo)';
       }
       if (!vendedor.ocupacion.trim()) {
         nuevosErrores[`vendedor-${index}-ocupacion`] = 'Ocupación requerida';
