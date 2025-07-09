@@ -7,11 +7,13 @@ COPY formulario/backend/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia todo el proyecto
-COPY . .
+# Copia la plantilla
+COPY formulario/backend/templates/ /app/templates/
 
-# Expone el puerto que usa FastAPI
-EXPOSE 10000
+# Copia el código
+COPY formulario/backend/ /app/
 
-# Comando para iniciar la aplicación
-CMD ["uvicorn", "formulario.backend.main:app", "--host", "0.0.0.0", "--port", "10000"]
+# Crea directorio para archivos generados
+RUN mkdir -p /app/generated
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
