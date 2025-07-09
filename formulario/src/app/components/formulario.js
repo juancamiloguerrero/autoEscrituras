@@ -280,7 +280,7 @@ export default function Formulario() {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.dowload = "escritura_generada.docx";
+        a.download = "escritura_generada.docx";
         a.click();
       })
       .catch(error => {
