@@ -775,7 +775,7 @@ return (
             <div>
               <label htmlFor={`comprador-${index}-correo`} className="block mb-2 text-sm font-medium text-gray-700">Correo electrónico</label>
               <input
-                type="email"
+                type="text"
                 id={`comprador-${index}-correo`}
                 value={comprador.correo}
                 onChange={(e) => handleCompradorChange(index, 'correo', e.target.value)}
@@ -982,7 +982,7 @@ return (
             <div>
               <label htmlFor={`vendedor-${index}-correo`} className="block mb-2 text-sm font-medium text-gray-700">Correo electrónico</label>
               <input
-                type="email"
+                type="text"
                 id={`vendedor-${index}-correo`}
                 value={vendedor.correo}
                 onChange={(e) => handleVendedorChange(index, 'correo', e.target.value)}

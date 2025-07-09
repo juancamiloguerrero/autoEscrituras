@@ -7,6 +7,7 @@ from docx import Document
 from docx.shared import Pt, Cm
 from datetime import datetime
 from typing import List
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 import math
 import uuid
 
@@ -246,7 +247,7 @@ def generar_fichas_partes(datos: FormularioData) -> str:
         contenido.append(construir_ficha(v))
     
     # Separador visual
-    contenido.append("\n" + "-" * 50 + "\n")
+    contenido.append("\n" + "\n")
 
     # Compradores
     encabezado_c = encabezado_personas(datos.compradores, "COMPRADOR")
@@ -277,6 +278,18 @@ CENTENAS = (
     "", "CIENTO", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS",
     "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS"
 )
+
+def fecha_a_letras_estilo_mensual(fecha_str: str) -> str:
+    meses = [
+        "", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+        "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+    ]
+    fecha = datetime.strptime(fecha_str, "%Y-%m-%d")
+    mes = meses[fecha.month]
+    dia = f"{fecha.day:02}"
+    anio = fecha.year
+    return f"{mes} {dia} DE {anio}"
+
 
 def numero_a_letras(n: int) -> str:
     if n == 0:
@@ -403,6 +416,7 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
         "parrafoCompradoresAceptan": generar_parrafo_compradoras_aceptan(datos),
         "parrafoParagrafoSegundo": generar_parrafo_paragrafo_segundo(datos),
         "fichasPartes": generar_fichas_partes(datos),
+        "letrasFecha": fecha_a_letras_estilo_mensual(datos.fechaOtorgamiento),
     }
 
     doc_text = "\n".join(p.text for p in doc.paragraphs)
@@ -433,11 +447,11 @@ def reemplazar_campos(doc: Document, datos: FormularioData):
         p.paragraph_format.space_before = Pt(0)
         p.paragraph_format.space_after = Pt(6)
         p.paragraph_format.line_spacing = 1.5
+        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
         for run in p.runs:
             run.font.name = 'Arial'
             run.font.size = Pt(12)
-            run.font.bold = True
 
     formatear_parrafos(doc)
     ajustar_margenes_superiores(doc)
