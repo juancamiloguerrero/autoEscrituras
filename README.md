@@ -1,6 +1,3 @@
-## 📑 README para **autoEscrituras**
-
-
 # 📝 autoEscrituras
 
 Plataforma **full-stack** que automatiza la generación de **escrituras y documentos legales** en formato `.docx`, reduciendo tiempos y errores en procesos notariales.
